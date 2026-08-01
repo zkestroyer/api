@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management - WebSocket Notifications</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --panel-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #64b5f6;
+            --danger-color: #ef5350;
+            --success-color: #81c784;
+            --warning-color: #ffb74d;
+            --border-color: #333;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--panel-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .status-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #252525;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            background-color: var(--danger-color);
+        }
+        .status-indicator.connected {
+            background-color: var(--success-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        h1, h2 {
+            margin-top: 0;
+            color: #fff;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            background-color: #2a2a2a;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: var(--accent-color);
+            color: #000;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        button.danger {
+            background-color: var(--danger-color);
+            color: #fff;
+        }
+
+        /* Events Log */
+        .events-log {
+            flex: 1;
+            background-color: #0d0d0d;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 10px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .event-entry {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #222;
+            word-wrap: break-word;
+        }
+        
+        .event-type {
+            font-weight: bold;
+        }
+        
+        .event-type.created { color: var(--success-color); }
+        .event-type.updated { color: var(--warning-color); }
+        .event-type.deleted { color: var(--danger-color); }
+        .event-type.list { color: var(--accent-color); }
+        .event-time { color: #666; font-size: 0.8em; margin-left: 10px; }
+
+        pre {
+            margin: 5px 0 0 0;
+            color: #bbb;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>System Status</h2>
+        <div class="status-container">
+            <div id="connection-status">
+                <span class="status-indicator" id="status-dot"></span>
+                <span id="status-text">Disconnected</span>
+            </div>
+        </div>
+        <p style="color: #aaa; font-size: 0.9em;">
+            This client connects via WebSocket to receive real-time notifications when student records are modified.
+        </p>
+    </div>
+
+    <div class="main-content">
+        <h1>Student Management Dashboard</h1>
+        
+        <div class="grid">
+            <!-- Controls Panel -->
+            <div class="panel">
+                <h2>Manage Students</h2>
+                
+                <div class="form-group">
+                    <label>Student ID (for Update/Delete)</label>
+                    <input type="text" id="student-id" placeholder="UUID...">
+                </div>
+                
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="student-name" placeholder="Name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="student-email" placeholder="Email">
+                </div>
+                
+                <div class="form-group">
+                    <label>Course</label>
+                    <input type="text" id="student-course" placeholder="Course">
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Year</label>
+                        <input type="number" id="student-year" placeholder="Year" min="1">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>GPA</label>
+                        <input type="number" id="student-gpa" placeholder="GPA" step="0.1" min="0" max="4">
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button onclick="createStudent()">Create</button>
+                    <button onclick="updateStudent()" style="background-color: var(--warning-color);">Update</button>
+                    <button onclick="deleteStudent()" class="danger">Delete</button>
+                    <button onclick="listStudents()" style="background-color: #888; color: #fff;">List</button>
+                </div>
+            </div>
+
+            <!-- Notifications Panel -->
+            <div class="panel">
+                <h2>Live Notifications</h2>
+                <div class="events-log" id="events-log">
+                    <!-- Events will be prepended here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WebSocket Client Logic
+        let ws;
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        const eventsLog = document.getElementById('events-log');
+
+        function connect() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}`;
+            
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                statusDot.classList.add('connected');
+                statusText.textContent = 'Connected';
+                logEvent('system', { message: 'WebSocket connection established' });
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const message = JSON.parse(event.data);
+                    logEvent(message.event, message.data, message.timestamp);
+                } catch (e) {
+                    console.error('Error parsing WebSocket message', e);
+                }
+            };
+
+            ws.onclose = () => {
+                statusDot.classList.remove('connected');
+                statusText.textContent = 'Disconnected (Reconnecting...)';
+                setTimeout(connect, 3000); // Auto-reconnect after 3s
+            };
+
+            ws.onerror = (err) => {
+                console.error('WebSocket error:', err);
+                ws.close();
+            };
+        }
+
+        function logEvent(type, data, timestamp = new Date().toISOString()) {
+            const entry = document.createElement('div');
+            entry.className = 'event-entry';
+            
+            let typeClass = '';
+            if (type === 'student:created') typeClass = 'created';
+            else if (type === 'student:updated') typeClass = 'updated';
+            else if (type === 'student:deleted') typeClass = 'deleted';
+            else if (type === 'student:list') typeClass = 'list';
+
+            const timeString = new Date(timestamp).toLocaleTimeString();
+            
+            entry.innerHTML = `
+                <span class="event-type ${typeClass}">[${type}]</span>
+                <span class="event-time">${timeString}</span>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+            
+            eventsLog.prepend(entry);
+            
+            // Keep only last 50 events
+            if (eventsLog.children.length > 50) {
+                eventsLog.removeChild(eventsLog.lastChild);
+            }
+        }
+
+        // Initialize connection
+        connect();
+
+        // REST API Calls
+        async function createStudent() {
+            const data = getFormData();
+            try {
+                const res = await fetch('/api/students', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (!res.ok) throw new Error(await res.text());
+                clearForm();
+            } catch (e) {
+                alert('Error creating student: ' + e.message);
+            }
+        }
+
+        async function updateStudent() {
+            const id = document.getElementById('student-id').value;
+            if (!id) return alert('Student ID required for update');
+            const data = getFormData();
+            try {
+                const res = await fetch(`/api/students/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (!res.ok) throw new Error(await res.text());
+            } catch (e) {
+                alert('Error updating student: ' + e.message);
+            }
+        }
+
+        async function deleteStudent() {
+            const id = document.getElementById('student-id').value;
+            if (!id) return alert('Student ID required for delete');
+            try {
+                const res = await fetch(`/api/students/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error(await res.text());
+                document.getElementById('student-id').value = '';
+            } catch (e) {
+                alert('Error deleting student: ' + e.message);
+            }
+        }
+
+        async function listStudents() {
+            try {
+                const res = await fetch('/api/students');
+                if (!res.ok) throw new Error(await res.text());
+                const students = await res.json();
+                console.log(students);
+                // Also populates the list event via WS
+            } catch (e) {
+                alert('Error listing students: ' + e.message);
+            }
+        }
+
+        function getFormData() {
+            return {
+                name: document.getElementById('student-name').value,
+                email: document.getElementById('student-email').value,
+                course: document.getElementById('student-course').value,
+                year: parseInt(document.getElementById('student-year').value, 10),
+                gpa: parseFloat(document.getElementById('student-gpa').value)
+            };
+        }
+
+        function clearForm() {
+            document.getElementById('student-name').value = '';
+            document.getElementById('student-email').value = '';
+            document.getElementById('student-course').value = '';
+            document.getElementById('student-year').value = '';
+            document.getElementById('student-gpa').value = '';
+        }
+    </script>
+</body>
+</html>

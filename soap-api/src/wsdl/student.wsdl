@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="StudentManagement"
+  targetNamespace="http://localhost:3002/wsdl"
+  xmlns:tns="http://localhost:3002/wsdl"
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+  <types>
+    <xsd:schema targetNamespace="http://localhost:3002/wsdl">
+      
+      <xsd:complexType name="Student">
+        <xsd:sequence>
+          <xsd:element name="id" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="name" type="xsd:string"/>
+          <xsd:element name="email" type="xsd:string"/>
+          <xsd:element name="course" type="xsd:string"/>
+          <xsd:element name="year" type="xsd:int"/>
+          <xsd:element name="gpa" type="xsd:float"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <!-- GetStudents -->
+      <xsd:element name="GetStudentsRequest">
+        <xsd:complexType/>
+      </xsd:element>
+      <xsd:element name="GetStudentsResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="students" type="tns:Student" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <!-- GetStudent -->
+      <xsd:element name="GetStudentRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="id" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetStudentResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="student" type="tns:Student"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <!-- AddStudent -->
+      <xsd:element name="AddStudentRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="student" type="tns:Student"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="AddStudentResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="student" type="tns:Student"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <!-- UpdateStudent -->
+      <xsd:element name="UpdateStudentRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="id" type="xsd:string"/>
+            <xsd:element name="student" type="tns:Student"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="UpdateStudentResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="student" type="tns:Student"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <!-- DeleteStudent -->
+      <xsd:element name="DeleteStudentRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="id" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="DeleteStudentResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="success" type="xsd:boolean"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+    </xsd:schema>
+  </types>
+
+  <!-- Messages -->
+  <message name="GetStudentsIn"><part name="parameters" element="tns:GetStudentsRequest"/></message>
+  <message name="GetStudentsOut"><part name="parameters" element="tns:GetStudentsResponse"/></message>
+
+  <message name="GetStudentIn"><part name="parameters" element="tns:GetStudentRequest"/></message>
+  <message name="GetStudentOut"><part name="parameters" element="tns:GetStudentResponse"/></message>
+
+  <message name="AddStudentIn"><part name="parameters" element="tns:AddStudentRequest"/></message>
+  <message name="AddStudentOut"><part name="parameters" element="tns:AddStudentResponse"/></message>
+
+  <message name="UpdateStudentIn"><part name="parameters" element="tns:UpdateStudentRequest"/></message>
+  <message name="UpdateStudentOut"><part name="parameters" element="tns:UpdateStudentResponse"/></message>
+
+  <message name="DeleteStudentIn"><part name="parameters" element="tns:DeleteStudentRequest"/></message>
+  <message name="DeleteStudentOut"><part name="parameters" element="tns:DeleteStudentResponse"/></message>
+
+  <!-- PortType -->
+  <portType name="StudentManagementPortType">
+    <operation name="GetStudents">
+      <input message="tns:GetStudentsIn"/>
+      <output message="tns:GetStudentsOut"/>
+    </operation>
+    <operation name="GetStudent">
+      <input message="tns:GetStudentIn"/>
+      <output message="tns:GetStudentOut"/>
+    </operation>
+    <operation name="AddStudent">
+      <input message="tns:AddStudentIn"/>
+      <output message="tns:AddStudentOut"/>
+    </operation>
+    <operation name="UpdateStudent">
+      <input message="tns:UpdateStudentIn"/>
+      <output message="tns:UpdateStudentOut"/>
+    </operation>
+    <operation name="DeleteStudent">
+      <input message="tns:DeleteStudentIn"/>
+      <output message="tns:DeleteStudentOut"/>
+    </operation>
+  </portType>
+
+  <!-- Binding -->
+  <binding name="StudentManagementBinding" type="tns:StudentManagementPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    
+    <operation name="GetStudents">
+      <soap:operation soapAction="GetStudents"/>
+      <input><soap:body use="literal"/></input>
+      <output><soap:body use="literal"/></output>
+    </operation>
+    <operation name="GetStudent">
+      <soap:operation soapAction="GetStudent"/>
+      <input><soap:body use="literal"/></input>
+      <output><soap:body use="literal"/></output>
+    </operation>
+    <operation name="AddStudent">
+      <soap:operation soapAction="AddStudent"/>
+      <input><soap:body use="literal"/></input>
+      <output><soap:body use="literal"/></output>
+    </operation>
+    <operation name="UpdateStudent">
+      <soap:operation soapAction="UpdateStudent"/>
+      <input><soap:body use="literal"/></input>
+      <output><soap:body use="literal"/></output>
+    </operation>
+    <operation name="DeleteStudent">
+      <soap:operation soapAction="DeleteStudent"/>
+      <input><soap:body use="literal"/></input>
+      <output><soap:body use="literal"/></output>
+    </operation>
+  </binding>
+
+  <!-- Service -->
+  <service name="StudentManagementService">
+    <port name="StudentManagementPort" binding="tns:StudentManagementBinding">
+      <soap:address location="http://localhost:3002/wsdl"/>
+    </port>
+  </service>
+</definitions>

@@ -1,0 +1,19 @@
+{
+  "name": "student-management-grpc",
+  "version": "1.0.0",
+  "description": "Student Management System gRPC API",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "start:server": "node src/server.js",
+    "start:client": "node src/client.js"
+  },
+  "author": "Zainab Khan",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.10.0",
+    "@grpc/proto-loader": "^0.7.10",
+    "uuid": "^9.0.1"
+  }
+}

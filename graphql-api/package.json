@@ -1,0 +1,18 @@
+{
+  "name": "student-management-graphql-api",
+  "version": "1.0.0",
+  "description": "A complete GraphQL API for a Student Management System",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "author": "Zainab Khan",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.0.0",
+    "graphql": "^16.0.0",
+    "uuid": "^9.0.0"
+  }
+}
