@@ -1646,6 +1646,49 @@ console.log(student.course); // "Computer Science"</code></pre>
 </div>
 
 <!-- ============================================ -->
+<!--       CHAPTER 7: UI DASHBOARDS               -->
+<!-- ============================================ -->
+<div class="page-break"></div>
+<div class="content">
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 7</div>
+        <h1>Unified Web UI Dashboards</h1>
+        <div class="chapter-desc">Visualizing API Interoperability and Design</div>
+    </div>
+
+    <h2>7.1 Concept and Purpose</h2>
+    <p>
+        To effectively demonstrate the architectural differences between the six implemented APIs, a suite of <strong>Unified Web UI Dashboards</strong> was developed. The core philosophy behind this design decision is to prove that <em>the frontend user experience remains completely isolated from the backend architectural choices</em>.
+    </p>
+    <p>
+        Whether the backend communicates via SOAP XML, protocol buffers, or WebSockets, the user interfaces are visually identical. The true distinction is only revealed within the <strong>Event Log</strong>, which exposes the underlying network activity.
+    </p>
+
+    <h2>7.2 Architecture of the Dashboards</h2>
+    <ul>
+        <li><strong>Frontend Technology:</strong> Vanilla HTML, CSS, and modern asynchronous JavaScript (ES6+ Modules, Async/Await).</li>
+        <li><strong>Styling:</strong> A modern, dark-mode "Glassmorphism" aesthetic with vibrant accents (inter-font, glowing buttons, smooth micro-animations).</li>
+        <li><strong>Event Driven:</strong> Real-time terminal-like Event Logs built directly into the UI to visualize standard HTTP verbs, GraphQL payloads, or WebSocket broadcasts without requiring developer tools.</li>
+    </ul>
+
+    <h2>7.3 API Bridges for Browser Compatibility</h2>
+    <p>
+        Modern web browsers (like Chrome or Safari) cannot natively execute certain backend protocols (like gRPC's binary HTTP/2 frames or pure SOAP envelopes without CORS/loopback issues). To solve this, specific architectures employ an <strong>API Bridge</strong> pattern:
+    </p>
+    <ul>
+        <li><strong>gRPC UI Bridge:</strong> A lightweight Express server (Port 3007) that acts as a middleman, translating standard browser JSON into protocol buffers and forwarding them to the gRPC server (Port 50051).</li>
+        <li><strong>SOAP UI Bridge:</strong> Due to Node.js <code>node-soap</code> loopback deadlocks, a dedicated Express server (Port 3008) directly invokes the SOAP Service layer, bypassing internal HTTP recursion, while the standalone SOAP server remains accessible (Port 3002).</li>
+    </ul>
+
+    <div class="info-box advantage">
+        <strong>✅ Key Takeaway</strong>
+        <p>
+            The inclusion of these visual dashboards eliminates the need for third-party tools like Postman, cURL, or SoapUI during evaluations. Evaluators can instantly interact with all six APIs directly from their browser, experiencing the real-time differences in transport mechanisms.
+        </p>
+    </div>
+</div>
+
+<!-- ============================================ -->
 <!--         COMPARATIVE ANALYSIS                 -->
 <!-- ============================================ -->
 <div class="page-break"></div>

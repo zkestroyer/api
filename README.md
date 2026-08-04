@@ -78,14 +78,16 @@ npm start
 
 ### Implementation-Specific Instructions
 
-| API | Start Command | Test With |
+Each API architecture now includes a full visual **Web Dashboard**! You don't need Postman or cURL anymore — you can test them directly in your browser.
+
+| API | Start Command | UI Dashboard Link |
 |-----|--------------|-----------|
-| REST | `npm start` | curl, Postman, browser |
-| SOAP | `npm start` | Postman (XML), SoapUI |
-| GraphQL | `npm start` | Apollo Sandbox (browser) |
-| Webhooks | `npm start` (starts both sender + receiver) | curl, Postman |
-| WebSockets | `npm start` → open `http://localhost:3006` | Browser client |
-| gRPC | `npm run start:server` then `npm run start:client` | Built-in test client |
+| **REST** | `cd rest-api && npm start` | [http://localhost:3001](http://localhost:3001) |
+| **SOAP** | `cd soap-api && npm start` | [http://localhost:3008](http://localhost:3008) |
+| **GraphQL** | `cd graphql-api && npm start` | [http://localhost:3003](http://localhost:3003) |
+| **Webhooks** | `cd webhooks && npm start` | Sender: [http://localhost:3004](http://localhost:3004)<br>Receiver: [http://localhost:3005](http://localhost:3005) |
+| **WebSockets** | `cd websockets && npm start` | [http://localhost:3006](http://localhost:3006) |
+| **gRPC** | `cd grpc && npm start` | [http://localhost:3007](http://localhost:3007) |
 
 ## 📊 Student Data Model
 

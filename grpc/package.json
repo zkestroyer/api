@@ -5,15 +5,18 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "concurrently \"npm run start:server\" \"npm run start:ui\"",
     "dev": "node src/server.js",
     "start:server": "node src/server.js",
+    "start:ui": "node src/ui-server.js",
     "start:client": "node src/client.js"
   },
   "author": "Zainab Khan",
   "dependencies": {
     "@grpc/grpc-js": "^1.10.0",
     "@grpc/proto-loader": "^0.7.10",
+    "concurrently": "^10.0.4",
+    "express": "^5.2.1",
     "uuid": "^9.0.1"
   }
 }

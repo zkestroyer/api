@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSockets API Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-plug" style="color: #10b981;"></i>
+                <h2>API Explorer</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" style="color: #10b981; border-left-color: #10b981; background-color: rgba(16, 185, 129, 0.1);"><i class="fas fa-server"></i> WebSockets API</a>
+                <div class="nav-divider"></div>
+                <div class="status-indicator">
+                    <span class="pulse"></span>
+                    <span id="connection-status">Connecting to WS Port 3006...</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" style="background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.1), transparent 500px);">
+            <header class="top-bar">
+                <div>
+                    <h1>Student Management System</h1>
+                    <p class="subtitle">Bi-directional WebSockets Architecture Implementation</p>
+                </div>
+                <button class="btn btn-primary" onclick="openAddModal()" style="background-color: #10b981; color: #fff;">
+                    <i class="fas fa-plus"></i> Add Student
+                </button>
+            </header>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.1);"><i class="fas fa-users"></i></div>
+                    <div class="stat-details">
+                        <h3>Total Students</h3>
+                        <p id="total-students">Loading...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71;">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Last Action</h3>
+                        <p id="last-action">System initialized</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-container glass-panel">
+                <div class="table-header">
+                    <h2><i class="fas fa-database"></i> Live Database</h2>
+                    <button class="btn btn-icon" onclick="fetchStudents()" title="Refresh Data (REST fallback)">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Course</th>
+                            <th>Year</th>
+                            <th>GPA</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-table-body">
+                        <!-- Rows will be populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Event Log -->
+            <div class="log-container glass-panel">
+                <div class="log-header">
+                    <h2><i class="fas fa-terminal"></i> WebSocket Event Log</h2>
+                </div>
+                <div class="log-body" id="event-log">
+                    <!-- Logs go here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div class="modal" id="add-modal">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h2>Add New Student</h2>
+                <button class="close-btn" onclick="closeAddModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="add-student-form">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="s-name" required placeholder="e.g. Jane Doe">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="s-email" required placeholder="jane@university.edu">
+                </div>
+                <div class="form-group">
+                    <label>Course</label>
+                    <input type="text" id="s-course" required placeholder="Computer Science">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Year (1-4)</label>
+                        <input type="number" id="s-year" required min="1" max="4" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>GPA (0.0-4.0)</label>
+                        <input type="number" id="s-gpa" required min="0" max="4" step="0.1" value="4.0">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: #10b981; color: #fff;">Save Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

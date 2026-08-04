@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhooks Receiver Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-satellite-dish" style="color: #8b5cf6;"></i>
+                <h2>API Explorer</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" style="color: #8b5cf6; border-left-color: #8b5cf6; background-color: rgba(139, 92, 246, 0.1);"><i class="fas fa-inbox"></i> Receiver</a>
+                <a href="http://localhost:3004" class="nav-item"><i class="fas fa-paper-plane"></i> Sender (Port 3004)</a>
+                <div class="nav-divider"></div>
+                <div class="status-indicator">
+                    <span class="pulse"></span>
+                    <span id="connection-status">Listening on Port 3005</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" style="background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.1), transparent 500px);">
+            <header class="top-bar">
+                <div>
+                    <h1>Webhooks Receiver</h1>
+                    <p class="subtitle">Live Incoming Event Stream (SSE)</p>
+                </div>
+            </header>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon" style="color: #8b5cf6; background: rgba(139, 92, 246, 0.1);"><i class="fas fa-bolt"></i></div>
+                    <div class="stat-details">
+                        <h3>Events Received</h3>
+                        <p id="total-events">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Log -->
+            <div class="log-container glass-panel" style="flex: 1; display: flex; flex-direction: column;">
+                <div class="log-header">
+                    <h2><i class="fas fa-list"></i> Event Stream History</h2>
+                </div>
+                <div class="log-body" id="event-log" style="height: 500px; font-size: 0.95rem;">
+                    <div style="color: var(--text-muted); text-align: center; margin-top: 20px;">Waiting for webhooks...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
